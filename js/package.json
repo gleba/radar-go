@@ -1,0 +1,71 @@
+{
+  "name": "adept-intelligence",
+  "version": "0.0.0",
+  "license": "ISC",
+  "author": "",
+  "description": "",
+  "scripts": {
+    "prod": "",
+    "build": "node --max-old-space-size=8192 scripts",
+    "start": "",
+    "pretty": "pretty-quick --staged"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": ""
+    }
+  },
+  "devDependencies": {
+    "@types/level-js": "^4.0.1",
+    "@types/lodash": "^4.14.149",
+    "@types/node": "latest",
+    "@types/node-telegram-bot-api": "^0.40.2",
+    "@types/socket.io": "^2.1.4",
+    "alak": "^2.0.1-rc6",
+    "babel-preset-es2015": "latest",
+    "chalk": "^3.0.0",
+    "cors": "^2.8.5",
+    "fast-gateway": "^2.2.0",
+    "fuse-box": "^4.0.0-next",
+    "http-proxy": "^1.18.0",
+    "husky": "^4.2.3",
+    "lasens": "0.1.0-next.3",
+    "lodash": "^4.17.15",
+    "memfs": "^3.1.2",
+    "node-sass": "^4.13.1",
+    "node-telegram-bot-api": "^0.40.0",
+    "pem": "^1.14.4",
+    "postcss-modules": "^1.5.0",
+    "preact": "^10.3.4",
+    "preact-scroll-header": "^1.0.3",
+    "prettier": "2.0.2",
+    "pretty-quick": "^2.0.1",
+    "pug": "^2.0.4",
+    "serve-handler": "^6.1.2",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
+    "source-map": "^0.7.3",
+    "stylus": "^0.54.7",
+    "ts-node": "latest",
+    "tslib": "latest",
+    "typescript": "latest",
+    "ua-parser-js": "^0.7.21",
+    "uglify-es": "^3.3.9",
+    "uglify-js": "^3.8.1"
+  },
+  "dependencies": {
+    "@msgpack/msgpack": "^1.12.0",
+    "@types/mongodb": "^3.5.4",
+    "clearx": "^2.1.1",
+    "frequency-distribution": "^1.0.0",
+    "fuse.js": "^5.1.0",
+    "level": "^6.0.1",
+    "mongodb": "^3.5.5",
+    "nats": "^1.4.8",
+    "preact-fluid": "^0.9.1",
+    "preact-render-to-string": "^5.1.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v17.1.0"
+  }
+}

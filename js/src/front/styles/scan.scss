@@ -1,0 +1,211 @@
+
+.rules{
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: stretch;
+    text-align: left;
+    //input {
+    //  height: 21px;
+    //  width: 13px;
+    //  margin-right: 5px;
+    //  margin-bottom: 5px;
+    //}
+  }
+}
+
+
+.logo-but {
+  height: auto;
+  //width: 55px;
+  display: flex;
+  flex-direction: column;
+  //padding: 2px 7px;
+  padding: 0;
+  position: relative;
+  .label {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    font-size: 13px;
+    text-align: center;
+    padding: 0 12px;
+  }
+  img {
+    padding: 5px;
+  }
+}
+
+.fxb {
+  //background-color: #fff;
+  //border: 0;
+  //outline: 0;
+  //padding: 1.5rem 2rem;
+  //font-size: 4rem;
+  //font-family: monospace;
+  box-shadow: 0 5px 10px gray;
+  transition: all 0.3s;
+  //cursor: pointer;
+  //border-radius: 5px;
+  //border-bottom: 4px solid #d9d9d9;
+}
+.fxb:hover {
+  box-shadow: 0px 15px 25px -5px gray;
+  border: 0;
+  transform: scale(1.03);
+  background-color: var(--color1);
+  .label {
+    font-size: 14px;
+  }
+}
+.fxb:active {
+  box-shadow: 0px 4px 8px var(--color2);
+  transform: scale(0.98);
+}
+
+.scan-con {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+.mini-range {
+  outline: none;
+  position: relative;
+  --range-back: var(--color);
+  --range-middle: var(--color1);
+  --range-front: var(--color);
+  * {
+    outline: none;
+  }
+  input[type=range] {
+    box-sizing: border-box;
+    font-size: 16px;
+    line-height: 1;
+    height: 2em;
+    background-color: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
+    width: 100%;
+    outline: none;
+    transition: all 0.5s;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+  }
+
+  input[type=range]:focus {
+    outline: none;
+  }
+
+  input[type=range]::-ms-track {
+    width: 100%;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 2em;
+    height: 2em;
+    margin-top: 0;
+    background-color: var(--range-middle);
+    border-radius: 1em;
+    border: 2px solid var(--range-back);;
+    cursor: pointer;
+  }
+
+  input[type=range]::-moz-range-thumb {
+    width: 2em;
+    height: 2em;
+    margin-top: 0;
+    background-color: var(--range-middle);
+    border-radius: 1em;
+    border: 1px solid var(--range-back);;
+    cursor: pointer;
+  }
+
+  input[type=range]::-ms-thumb {
+    width: 2em;
+    height: 2em;
+    margin-top: 0;
+    background-color: var(--range-front);
+    border-radius: 1em;
+    border: 1px solid var(--range-back);;
+    cursor: pointer;
+  }
+
+  input[type=range]:hover::-webkit-slider-thumb {
+    background-color: var(--range-back);
+    border-color: var(--range-back);
+  }
+
+  input[type=range]:hover::-moz-range-thumb {
+    background-color: var(--range-back);
+    border-color: var(--range-front);
+  }
+
+  input[type=range]:hover::-ms-thumb {
+    background-color: var(--range-back);
+    border-color: var(--range-front)
+  }
+
+  input[type=range]:active::-webkit-slider-thumb {
+    border-color: var(--range-back)
+  }
+
+  input[type=range]:active::-moz-range-thumb {
+    border-color: var(--range-back)
+  }
+
+  input[type=range]:active::-ms-thumb {
+    border-color: var(--range-back)
+  }
+
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    cursor: pointer;
+    height: 1em;
+    border-bottom: 2px solid var(--range-front);
+    background-color: transparent;
+  }
+
+  input[type=range]::-moz-range-track {
+    width: 100%;
+    cursor: pointer;
+    height: 1em;
+    border-bottom: 2px solid var(--range-front);
+    background-color: transparent;
+  }
+
+  input[type=range]::-ms-track {
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+
+  .minmax {
+    position: absolute;
+    pointer-events: none;
+    width: 100%;
+    display: flex;
+    color: var(--range-front);
+    justify-content: space-between;
+  }
+}
+
+
+.popup {
+  .markets{
+    padding: 20px;
+  }
+  &.market {
+    min-width: 320px;
+    //background-color: red;
+  }
+}

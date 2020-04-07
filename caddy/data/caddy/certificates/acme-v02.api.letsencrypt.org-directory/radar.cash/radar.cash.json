@@ -1,0 +1,10 @@
+{
+	"sans": [
+		"radar.cash"
+	],
+	"issuer_data": {
+		"domain": "radar.cash",
+		"certUrl": "https://acme-v02.api.letsencrypt.org/acme/cert/034c5d76d3526787ecca9a1b89227c23a67f",
+		"certStableUrl": "https://acme-v02.api.letsencrypt.org/acme/cert/034c5d76d3526787ecca9a1b89227c23a67f"
+	}
+}

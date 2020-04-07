@@ -1,0 +1,12 @@
+{
+	"Email": "dev@gleb.pw",
+	"Registration": {
+		"body": {
+			"status": "valid",
+			"contact": [
+				"mailto:dev@gleb.pw"
+			]
+		},
+		"uri": "https://acme-v02.api.letsencrypt.org/acme/acct/82020336"
+	}
+}

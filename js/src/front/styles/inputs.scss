@@ -1,0 +1,25 @@
+input,
+textarea {
+  outline: none;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  width: 100%;
+  font-family: inherit;
+}
+
+.up-style {
+  background: transparent;
+  line-height: 38px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  color: #666;
+  font-size: 18px;
+  transition: all 0.4s ease;
+  padding: 0 20px;
+}
+.up-style:focus,
+.up-style:focus {
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+}

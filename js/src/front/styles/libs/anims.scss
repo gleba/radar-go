@@ -1,0 +1,50 @@
+.tracking-in-08 {
+  animation: tracking-in-expand 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) ;
+}
+.tracking-in-03 {
+  animation: tracking-in-expand 0.3s cubic-bezier(0.215, 0.610, 0.355, 1.000) ;
+}
+.tracking-in-expand-right {
+  animation: tracking-in-expand-right 0.3s cubic-bezier(0.215, 0.610, 0.355, 1.000) ;
+}
+@keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes tracking-in-expand-right {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+
+.scale-up-hor-left {
+  animation: scale-up-hor-left 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+@keyframes scale-up-hor-left {
+  0% {
+    transform: scaleX(0.4);
+    transform-origin: 0% 0%;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: 0% 0%;
+  }
+}

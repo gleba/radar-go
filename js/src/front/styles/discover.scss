@@ -1,0 +1,62 @@
+.discover {
+  text-align: left;
+  padding-top: 0;
+  .item {
+    font-size: 16px;
+    padding: 20px;
+    font-weight: bold;
+    width: 100%;
+  }
+  .item:hover {
+    font-size: 16px;
+    padding: 20px;
+    color: var(--color)
+  }
+  .all {
+    color: silver;
+  }
+}
+.cell-price {
+  text-align: right;
+}
+//.tc-2 {
+//  display: none;
+//}
+
+[class*="maybe-col-"] {  /* WE USE * HERE */
+  display: none;
+}
+//.tc-#{0} {
+//    display: none;
+//}
+.maybe-col-2 {
+  display: table-cell ;
+}
+@media (min-width: 480px) {
+  .maybe-col-5 {
+    display: table-cell;
+  }
+}
+@media (min-width: 680px) {
+  .maybe-col-4 {
+    display: table-cell;
+  }
+}
+
+@media (min-width: 880px) {
+  .maybe-col-1 {
+    display: table-cell;
+  }
+}
+@media (min-width: 1080px) {
+  .maybe-col-0 {
+    display: table-cell;
+  }
+}
+
+/* Larger than desktop screen */
+@media (min-width: 10.0rem) {
+  //.tc-1 {
+  //  //display: none;
+  //}
+}

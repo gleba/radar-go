@@ -1,0 +1,26 @@
+{    
+    email dev@gleb.pw
+    admin 0.0.0.0:2019
+    http_port 3080
+}
+
+
+radar.cash  {
+    root * ../js/static
+    @notFile {
+        not {
+            file {
+                try_files {path} 
+            }
+        }
+    }
+    reverse_proxy /hmr localhost:4003
+    reverse_proxy @notFile localhost:4444
+    reverse_proxy /ws localhost:4001
+    route /api/* {
+        uri strip_prefix api
+        reverse_proxy localhost:4002
+    }
+
+    file_server 
+}

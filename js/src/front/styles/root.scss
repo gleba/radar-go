@@ -1,0 +1,82 @@
+@import "libs/anims";
+@import "libs/norm";
+@import "libs/mili";
+@import "libs/color-buttons";
+@import "land";
+@import "hud";
+@import "inputs";
+@import "app";
+@import "buttons";
+@import "discover";
+@import "scan";
+:root {
+  --color : #00AFBF;
+  --color1 : #5DBA00;
+  --color2 : #606c76;
+  --route-filter : none;
+  --route-filter-time : 377ms;
+}
+
+.hide {
+  visibility: hidden;
+}
+.onlyLab {
+  display: none;
+}
+.pc {
+  display: none;
+}
+.onlyPc {
+  display: none;
+}
+
+.upcolor {
+  color: var(--color1);
+}
+.downcolor {
+  color: var(--color);
+}
+
+@media (min-width: 40.0rem) {
+  .onlyPc {
+    display: table-cell!important;
+  }
+  .pc {
+    display: inline-block !important;
+  }
+}
+
+/* Larger than tablet screen */
+@media (min-width: 80.0rem) {
+  .onlyLab {
+    display: table-cell!important;
+  }
+}
+
+/* Larger than desktop screen */
+@media (min-width: 120.0rem) {
+  .onlyLab {
+    visibility: visible!important;
+  }
+}
+*{
+  -webkit-tap-highlight-color: transparent;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+*:focus{
+  -webkit-tap-highlight-color: transparent;
+}
+
+.row-stretch {
+  display: flex;
+  flex-direction: row;
+  //justify-content: stretch;
+  //justify-items: stretch;
+  //align-items: center;
+  //justify-content: stretch;
+  * {
+    width: 100%;
+  }
+}
