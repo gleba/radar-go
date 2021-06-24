@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ./heat/box
+#rm -rf $(ls -I "0.go")
+go generate

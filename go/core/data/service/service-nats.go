@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/nats-io/nats.go"
 	"log"
+	"os"
 	"radar.cash/core/hand"
 )
 
@@ -11,10 +12,9 @@ var NatsEncoded *nats.EncodedConn
 
 func OpenNATS() {
 	var err error
-	Nats, err = nats.Connect(nats.DefaultURL, nats.Token("2yKnjkfXCtA8ik2yKnjkfXCtA8ik"))
+
+	Nats, err = nats.Connect("nats://"+os.Getenv("NATS")+":4222", nats.Token("2yKnjkfXCtA8ik2yKnjkfXCtA8ik"))
 	hand.Safe(err)
-	log.Print("nats: ok")
 	NatsEncoded, _ = nats.NewEncodedConn(Nats, nats.GOB_ENCODER)
+	log.Print("nats: ok")
 }
-
-

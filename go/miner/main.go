@@ -1,23 +1,29 @@
 package main
 
 import (
-	"radar.cash/core/intel/service"
+	"radar.cash/core/data/rocks"
+	"radar.cash/core/data/service"
 	"radar.cash/miner/cmc"
+	"radar.cash/miner/end"
 	"time"
 )
 
 func init() {
 	service.OpenClickHose()
 	service.OpenNATS()
+	rocks.Init()
 }
 
 func main() {
-	cmc.WarmCaches()
-	latestTicker := time.NewTicker(time.Second * 12)
+
+	end.WarmCaches()
+
+	latestTicker := time.NewTicker(time.Second * 1)
 	storyTicker := time.NewTicker(time.Hour * 1)
-	//infoTicker := time.NewTicker(time.Hour * 360)
+
 	cmc.MineLatest()
 	go cmc.MineStory()
+
 	for {
 		select {
 		//case _ = <-infoTicker.C:
@@ -27,4 +33,5 @@ func main() {
 			cmc.MineLatest()
 		}
 	}
+	println("+")
 }

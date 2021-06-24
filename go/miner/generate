@@ -1,0 +1,5 @@
+#!/bin/bash
+#go get -u github.com/a8m/syncmap@master
+cd ./heat/smap
+rm -rf $(ls -I "0.go")
+go generate

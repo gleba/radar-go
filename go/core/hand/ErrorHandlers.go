@@ -15,9 +15,20 @@ func Safe(err error) bool {
 	return true
 }
 
-func FiniteFloat(value float64) float64  {
-	if (math.IsNaN(value)) {
-		fmt.Errorf("FiniteFloat in NaN")
+func IsHoly(values []float64) bool {
+	min := 0.0
+	for _, vv := range values {
+		min = math.Min(min, vv)
+	}
+	if min == 0 {
+		return false
+	}
+	return true
+}
+
+func FiniteFloat(value float64) float64 {
+	if math.IsNaN(value) {
+		fmt.Print("FiniteFloat in NaN")
 		return -1
 	}
 	if math.IsInf(value, 1) {
@@ -31,8 +42,8 @@ func FiniteFloat(value float64) float64  {
 
 func SafeFloat64(value float64, err error) float64 {
 	if err != nil {
-		log.Println("core.SafeFloat64")
-		log.Fatal(err.Error())
+		log.Println("core.SafeFloat64 ", value)
+		//log.Fatal(err.Error())
 		return FiniteFloat(value)
 	}
 	return FiniteFloat(value)

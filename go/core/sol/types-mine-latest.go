@@ -2,7 +2,7 @@ package sol
 
 import "time"
 
-type CCoin struct {
+type CoinQuote struct {
 	ID                uint32      `json:"id"`
 	Name              string      `json:"name"`
 	Symbol            string      `json:"symbol"`
@@ -25,6 +25,23 @@ type CCoin struct {
 	} `json:"quote"`
 }
 
+func (self CoinQuote) Pulse() CoinPulse {
+	return CoinPulse{
+		PriceVol: PriceVol{
+			VolumeUSD: self.Quote.USD.Volume24H,
+			VolumeBTC: self.Quote.BTC.Volume24H,
+			PriceUSD:  self.Quote.USD.Price,
+			PriceBTC:  self.Quote.BTC.Price,
+		},
+		MarketCap: MarketCap{
+			MarketCapUSD: self.Quote.USD.MarketCap,
+			MarketCapBTC: self.Quote.BTC.MarketCap,
+		},
+		ID:   self.ID,
+		Time: self.LastUpdated,
+	}
+}
+
 type ListingPrice struct {
 	Price            float64   `json:"price"`
 	Volume24H        float64   `json:"volume_24h"`
@@ -44,5 +61,5 @@ type CmcListingQuery struct {
 		CreditCount  int         `json:"credit_count"`
 		Notice       interface{} `json:"notice"`
 	} `json:"status"`
-	Data []CCoin `json:"data"`
+	Data []CoinQuote `json:"data"`
 }

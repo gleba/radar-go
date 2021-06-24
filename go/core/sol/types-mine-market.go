@@ -3,12 +3,12 @@ package sol
 import "time"
 
 type CoinMarkets struct {
-	ID      uint32      `json:"id"`
+	ID      uint32   `json:"id"`
 	Markets []Market `json:"markets"`
 }
 
 type Exchange struct {
-	ID   int    `json:"id"`
+	ID   uint32 `json:"id"`
 	Name string `json:"name"`
 	Slug string `json:"slug"`
 }
@@ -23,7 +23,7 @@ type Pair struct {
 }
 
 type MarketPair struct {
-	Exchange Exchange `json:"exchange"`
+	Exchange        Exchange    `json:"exchange"`
 	OutlierDetected int         `json:"outlier_detected"`
 	Exclusions      interface{} `json:"exclusions"`
 	MarketPairBase  struct {

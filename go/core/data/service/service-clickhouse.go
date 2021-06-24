@@ -5,16 +5,16 @@ import (
 	"github.com/ClickHouse/clickhouse-go"
 	"github.com/jmoiron/sqlx"
 	"log"
+	"os"
 	"radar.cash/core/hand"
 )
 
 var SqlX *sqlx.DB
 
-
-
 func OpenClickHose() {
 	var err error
-	SqlX, err = sqlx.Open("clickhouse", "tcp://localhost:9000?username=default&password=a3dd9e844b7a43af4b0b5966016103f1d5ee97dd")
+	//SqlX, err = sqlx.Open("clickhouse", "tcp://clickhouse:9000?username=default&password=a3dd9e844b7a43af4b0b5966016103f1d5ee97dd")
+	SqlX, err = sqlx.Open("clickhouse", "tcp://"+os.Getenv("CLICKHOUSE")+":9000?username=default&password=a3dd9e844b7a43af4b0b5966016103f1d5ee97dd")
 	hand.Safe(err)
 	if err := SqlX.Ping(); err != nil {
 		if exception, ok := err.(*clickhouse.Exception); ok {
@@ -31,6 +31,7 @@ func OpenClickHose() {
 	}
 	log.Println("ClickHouse: ok")
 }
+
 //
 //type ClickHouseWriter struct {
 //	X     *sql.Tx
@@ -55,8 +56,8 @@ func OpenClickHose() {
 //	}
 //}
 //
-//func (w *ClickHouseWriter) Add(intel ...interface{}) {
-//	_, err := w.stmt.Exec(intel...)
+//func (w *ClickHouseWriter) Add(data ...interface{}) {
+//	_, err := w.stmt.Exec(data...)
 //	SafeError(err)
 //	w.Count = 1 + w.Count
 //}

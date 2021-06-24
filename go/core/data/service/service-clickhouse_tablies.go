@@ -3,8 +3,8 @@ package service
 import "fmt"
 
 const (
-	TableCmcPulse    = "CmcPulse"
-	TableCmcDaysPulse = "CmcDaysPulse"
+	TableCmcPulse = "CmcPulse"
+	//TableCmcDaysPulse = "CmcDaysPulse"
 )
 
 var tablePulseVol = `	
@@ -27,19 +27,19 @@ CREATE TABLE IF NOT EXISTS %s (
 )
 ENGINE=MergeTree()
 ORDER BY (Time)`, TableCmcPulse, tablePulseVol, tableMarketCap),
-
-fmt.Sprintf(`
-CREATE TABLE IF NOT EXISTS %s (
-	Open      Float64,
-	Close     Float64,
-	High      Float64,
-	Low       Float64,
-	Volume    Float64,
-	MarketCap Float64,
-	ID    UInt32,
-	Date  		Date
-)
-ENGINE=MergeTree()
-ORDER BY (ID, Date)
-`, TableCmcDaysPulse),
+	`CREATE TABLE IF NOT EXISTS markets (
+	id UInt32,
+	data BLOB
+) ENGINE=EmbeddedRocksDB
+PRIMARY KEY id;`,
+	`CREATE TABLE IF NOT EXISTS quotes (
+	id UInt32,
+	data BLOB
+) ENGINE=EmbeddedRocksDB
+PRIMARY KEY id;`,
+	`CREATE TABLE IF NOT EXISTS quotes (
+	id UInt32,
+	data BLOB
+) ENGINE=EmbeddedRocksDB
+PRIMARY KEY id;`,
 }
