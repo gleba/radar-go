@@ -1,0 +1,15 @@
+version: '3.5'
+services:
+  miner:
+    build: ./miner
+    restart: always
+    external_links:
+      - clickhouse
+      - nats
+    environment:
+      NATS: nats
+      CLICKHOUSE: clickhouse
+networks:
+  default:
+    external:
+      name: blue_ocean
