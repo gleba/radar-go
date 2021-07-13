@@ -12,7 +12,6 @@ var VolumeVariance = 7
 var VolumeHarmonic = 8
 var VolumeGeometric = 9
 
-
 var Volatility = 10
 var VolatilityMedian = 11
 var VolatilityGeometric = 12

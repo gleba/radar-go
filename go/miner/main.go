@@ -33,5 +33,4 @@ func main() {
 			cmc.MineLatest()
 		}
 	}
-	println("+")
 }

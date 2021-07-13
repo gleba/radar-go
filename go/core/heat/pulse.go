@@ -1,6 +1,7 @@
 package heat
 
 import (
+	"fmt"
 	"log"
 	"radar.cash/core/data/service"
 	"radar.cash/core/heat/box"
@@ -10,6 +11,7 @@ import (
 var Pulses box.Pulses
 
 func RestorePulse() []*sol.CoinPulse {
+	fmt.Println("RestorePulse")
 	pulse := sol.CoinPulse{}
 	var pulses []*sol.CoinPulse
 	rows, err := service.SqlX.Queryx(`SELECT *
@@ -30,5 +32,7 @@ WHERE Time IN (SELECT Time
 		pulses = append(pulses, &pulse)
 		Pulses.Store(pulse.ID, pulse)
 	}
+
+	fmt.Println("RestorePulse done")
 	return pulses
 }

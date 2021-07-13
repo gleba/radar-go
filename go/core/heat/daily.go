@@ -12,6 +12,7 @@ import (
 var DailyConst box.DailyConsts
 
 func RestoreDaily() {
+	fmt.Println("RestoreDaily")
 	r := rocks.DailyConst.LoadAll()
 	fmt.Println("RestoreDaily", len(r))
 	for _, raw := range r {

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"radar.cash/core/data/eSpace"
 	"radar.cash/core/data/service"
 	"radar.cash/core/hand"
 	"radar.cash/core/sol"
@@ -55,6 +56,7 @@ func (w *PulseWriter) Commit() {
 
 		}
 		hand.Safe(tx.Commit())
+		eSpace.Pulses.Publish(w.queueCoinPulse)
 	}
 	if len(w.queueQuotes) > 0 {
 		tx, _ := service.SqlX.Begin()
@@ -64,6 +66,7 @@ func (w *PulseWriter) Commit() {
 			_, _ = stmt.Exec(quote.ID, bytes)
 		}
 		hand.Safe(tx.Commit())
+
 		fmt.Println("*", len(w.queueCoinPulse))
 	}
 	tool.MemState()
