@@ -1,4 +1,4 @@
-package pegas
+package wings
 
 type Operation int
 
@@ -31,14 +31,15 @@ type RawFlowRecord struct {
 }
 
 type MarketFiler struct {
-	Id      int
-	Markets map[string]bool
-	Exclude bool
+	Id          int
+	Markets     map[string]bool
+	IncludeOnly bool
 }
 type RawMarketFilter struct {
-	Id int `json:"int"`
-	//Label   string `json:"label,omitempty"`
-	Exclude bool `json:"exclude,omitempty"`
+	Id    int    `json:"int"`
+	Label string `json:"label,omitempty"`
+	//Exclude     bool `json:"exclude,omitempty"`
+	IncludeOnly bool `json:"include_only,omitempty"`
 }
 
 type CoinMarkets struct {
@@ -46,8 +47,22 @@ type CoinMarkets struct {
 	Markets map[string]bool
 }
 
+type AlertActiveRuleValue struct {
+	Value      float64 `json:"value,omitempty"`
+	StartTime  int64   `json:"start_time,omitempty"`
+	UpdateTime int64   `json:"update_time,omitempty"`
+	PeakValue  float64 `json:"peak_value,omitempty"`
+	PeakTime   int64   `json:"peak_time,omitempty"`
+}
+
+type AlertValue struct {
+	Value  float64 `json:"value,omitempty"`
+	RuleId int     `json:"rule_id,omitempty"`
+}
+
 type Alert struct {
-	Raw           RawAlert
+	Raw           RawAlert ``
+	IsActive      bool
 	Rules         []*Rule
 	Filters       []*FlowFilter
 	FilterMarkets []*MarketFiler

@@ -1,90 +1,93 @@
 package pegas
 
 import (
-	"fmt"
 	"math"
 	"radar.cash/core/heat"
 	"radar.cash/core/sol"
 	"radar.cash/core/tool"
+	"radar.cash/pharos/pegas/wings"
+	"radar.cash/pharos/vars"
 )
 
 func AcceptPulse(pulses []*sol.CoinPulse) {
 	for _, pulse := range pulses {
+		heat.Pulses.Store(pulse.ID, *pulse)
 		dconst, _ := heat.DailyConst.Load(pulse.ID)
 		//fmt.Println(dconst)
-		imarket := IndexMarket[pulse.ID]
-		for _, alert := range Alerts {
-			inMarket := len(alert.FilterMarkets) == 0
+		imarket := indexMarket[pulse.ID]
+		vars.Alerts.Range(func(z int, alert wings.Alert) bool {
+			if !alert.IsActive {
+				return true
+			}
+			outOfMarket := len(alert.FilterMarkets) != 0
 			for _, m := range alert.FilterMarkets {
 				for mn, _ := range m.Markets {
 					if imarket[mn] {
-						inMarket = true
+						outOfMarket = !m.IncludeOnly
 						break
 					}
 				}
-				if inMarket {
+				if outOfMarket {
 					break
 				}
 			}
-			if !inMarket {
-				continue
+			if outOfMarket {
+				return true
 			}
 
-
-			inFilter := []bool{}
-			checkF := func(v float64, vv float64){
+			alertFilter := []bool{}
+			checkF := func(v float64, vv float64, filterType int) {
 				if vv > v {
-					inFilter = append(inFilter, true)
+					alertFilter = append(alertFilter, true)
 				}
 			}
 			for _, f := range alert.Filters {
 				switch f.Type {
-				case FlowCapitalization:
-					checkF(f.Raw.Value, pulse.MarketCap.CapByLV(f.Raw.Lv))
-				case FlowPrice:
-					checkF(f.Raw.Value, pulse.PriceByLV(f.Raw.Lv))
-				case FlowVolume:
-					checkF(f.Raw.Value, pulse.VolByLV(f.Raw.Lv))
+				case wings.FlowCapitalization:
+					checkF(f.Raw.Value, pulse.MarketCap.CapByLV(f.Raw.Lv), f.Type)
+				case wings.FlowPrice:
+					checkF(f.Raw.Value, pulse.PriceByLV(f.Raw.Lv), f.Type)
+				case wings.FlowVolume:
+					checkF(f.Raw.Value, pulse.VolByLV(f.Raw.Lv), f.Type)
 				}
 			}
-			if len(inFilter) != len(alert.Filters) {
-				continue
+			if len(alertFilter) != len(alert.Filters) {
+				return true
 			}
 
-			fine := []bool{}
+			alertValues := []*wings.AlertValue{}
 
 			for _, rule := range alert.Rules {
-				tV , tD := targetValue(pulse, &dconst, rule.Raw.Lv, rule.Si, rule.Period)
+				tV, tD := targetValue(pulse, &dconst, rule.Raw.Lv, rule.Si, rule.Period)
 				if tV == -1 && tD == -1 {
 					continue
 				}
 				pc := tool.PercentageChange(tD, tV)
 				xV := rule.Raw.Value
-				//q, _ := heat.Quotas.Load(pulse.ID)
-				//fmt.Println(rule.Raw)
-				//fmt.Println(pc)
-				//fmt.Println("https://coinmarketcap.com/currencies/" +q.Slug)
+				av := &wings.AlertValue{
+					Value:  pc,
+					RuleId: rule.Raw.Id,
+				}
 				switch rule.Operation {
-				case Above:
+				case wings.Above:
 					if pc < xV {
-						fine = append(fine, true)
+						alertValues = append(alertValues, av)
 					}
-				case Greater:
+				case wings.Greater:
 					if pc > xV {
-						fine = append(fine, true)
+						alertValues = append(alertValues, av)
 					}
-				case Corridor:
+				case wings.Corridor:
 					if math.Abs(pc) < xV {
-						fine = append(fine, true)
+						alertValues = append(alertValues, av)
 					}
 				}
 			}
-			isActive := len(fine) == len(alert.Rules)
-			if isActive {
-				q, _ := heat.Quotas.Load(pulse.ID)
-				fmt.Println("https://coinmarketcap.com/currencies/" +q.Slug)
+			if len(alertValues) == len(alert.Rules) {
+				updateAlert(alertValues, &alert, pulse, dconst)
 			}
-		}
+			return true
+		})
 	}
 }
 
@@ -95,7 +98,7 @@ func targetValue(pulse *sol.CoinPulse, dialy *sol.DailyConst, lv string, s int, 
 	if len(dialy.Tails) <= period+1 {
 		return -1, -1
 	}
-	if dialy. [period][lv] == nil {
+	if dialy.Tails[period][lv] == nil {
 		return -1, -1
 	}
 	d := dialy.Tails[period][lv][s]

@@ -1,0 +1,47 @@
+#!/bin/bash
+
+NAME="radar_miner"
+
+HOST="root@radar.cash"
+HOST_ROOT_DIR="/home/radar/go_app"
+HOST_DIR="${HOST_ROOT_DIR}/${NAME}"
+
+
+
+#echo "build: ${NAME}"
+#echo "building..."
+#export CGO_ENABLED=0
+#GOOS=${OS} GOARCH=${ARCH} go build -o ${NAME}
+#echo "uploading..."
+#scp ./${NAME} ${HOST}:${HOST_DIR}${name}
+#
+#
+#ssh ${HOST} cp ./lls/artifacts/${ANAME}_amd64-linux ./lls/lls-docker/lls
+#
+#
+
+
+mkdir "templ"
+export CGO_ENABLED=0
+GOOS=linux GOARCH=amd64 go build -o ./templ/${NAME}
+dockerFile="
+FROM alpine
+WORKDIR /app
+COPY ./${NAME} /app/${NAME}
+RUN pwd
+RUN ls
+CMD [\"/app/${NAME}\"]
+"
+echo "$dockerFile" > templ/Dockerfile
+export CGO_ENABLED=0
+echo "building..."
+GOOS=linux GOARCH=amd64 go build -o ${NAME}
+echo "...done"
+
+echo "now sync"
+rsync -rvaz ./templ/ ${HOST}:${HOST_DIR}
+#rm -rf ./templ
+echo "done"
+
+scp ../docker-compose.yaml ${HOST}:${HOST_ROOT_DIR}/docker-compose.yaml
+ssh -n -f ${HOST} "sh -c 'cd ${HOST_ROOT_DIR}; docker-compose up --build -d'"

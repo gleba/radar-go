@@ -1,0 +1,10 @@
+POSTGRES_USER: "postgres"
+POSTGRES_PASSWORD: "UhzUnFLbY9fhSN"
+
+POSTGRES_ADDR: "localhost:5432"
+POSTGRES_TEMPORARY_TABLES: false
+
+
+CLICKHOUSE=radar.cash;
+NATS=radar.cash;
+POSTGRES=radar.cash:32234

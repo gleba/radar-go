@@ -18,7 +18,7 @@ func main() {
 
 	end.WarmCaches()
 
-	latestTicker := time.NewTicker(time.Second * 1)
+	latestTicker := time.NewTicker(time.Second * 24)
 	storyTicker := time.NewTicker(time.Hour * 1)
 
 	cmc.MineLatest()

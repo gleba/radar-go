@@ -27,7 +27,7 @@ PRIMARY KEY id;`, name)
 	_, err := service.SqlX.Exec(q)
 	hand.Safe(err)
 	r.queue = make(chan RockRaw, 10000)
-	writers = append(writers, &r)
+	writers.Store(name, r)
 	return &r
 }
 
@@ -55,7 +55,8 @@ func (t RocksKv) Store(id uint32, data interface{}) {
 	}
 }
 
-var writers []*RocksKv
+//var writers []*RocksKv
+var writers SyncRocksKv
 var writeTicker = time.NewTicker(time.Second * 1)
 
 func init() {
@@ -66,7 +67,7 @@ func weather() {
 	for {
 		select {
 		case _ = <-writeTicker.C:
-			for _, writer := range writers {
+			writers.Range(func(key string, writer RocksKv) bool {
 				count := len(writer.queue)
 				if count > 0 {
 					q := fmt.Sprintf(`INSERT INTO %s (id, data) VALUES (?, ?)`, writer.NameSpace)
@@ -84,7 +85,8 @@ func weather() {
 					stmt = nil
 					fmt.Println(writer.NameSpace, "+", count)
 				}
-			}
+				return true
+			})
 		}
 	}
 }

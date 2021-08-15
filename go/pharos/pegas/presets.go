@@ -3,13 +3,13 @@ package pegas
 import (
 	"fmt"
 	"radar.cash/core/data/service"
+	"radar.cash/pharos/pegas/wings"
+	"radar.cash/pharos/vars"
 )
-
-var Alerts map[int]*Alert
 
 func SyncPresets() {
 	fmt.Println("SyncPresets start")
-	period := []RawEnum{}
+	period := []wings.RawEnum{}
 	mapPeriod := map[string]int{}
 	service.DB.Query(&period, `select * from period;`)
 	for _, enum := range period {
@@ -17,122 +17,139 @@ func SyncPresets() {
 	}
 
 	mapCoeff := map[string]int{}
-	coefficients := []RawEnum{}
+	coefficients := []wings.RawEnum{}
 	service.DB.Query(&coefficients, `select * from coefficients;`)
 	for _, coefficient := range coefficients {
 		mapCoeff[coefficient.Uuid] = coefficient.Index
 	}
 
 	mapOperations := map[string]int{}
-	operations := []RawOperation{}
+	mapOperationsInstances := map[string]wings.RawOperation{}
+	operations := []wings.RawOperation{}
 	service.DB.Query(&operations, `select * from operations;`)
 	for _, operation := range operations {
 		mapOperations[operation.Uuid] = operation.Code
+		mapOperationsInstances[operation.Uuid] = operation
 	}
 
-	rawFlows := []RawFlowRecord{}
+	rawFlows := []wings.RawFlowRecord{}
 	service.DB.Query(&rawFlows, `select * from flow;`)
 	mapFlows := map[string]int{}
 	for _, flow := range rawFlows {
 		mapFlows[flow.Uuid] = flow.Code
 	}
 
-	rawFilters := []RawFilter{}
+	rawFilters := []wings.RawFilter{}
 	service.DB.Query(&rawFilters, `select * from filters;`)
 
-	mapFilters := map[int]*FlowFilter{}
+	mapFilters := map[int]*wings.FlowFilter{}
 	for _, r := range rawFilters {
-		mapFilters[r.Id] = &FlowFilter{
+		mapFilters[r.Id] = &wings.FlowFilter{
 			Type: mapFlows[r.Flow],
 			Raw:  r,
 		}
 	}
 
-	filterMarkets := []RawMarketFilter{}
+	filterMarkets := []wings.RawMarketFilter{}
 	service.DB.Query(&filterMarkets, `select * from filter_market;`)
 
-	mapFilterMarkets := map[int]*MarketFiler{}
+	mapFilterMarkets := map[int]*wings.MarketFiler{}
 	for _, market := range filterMarkets {
-		mapFilterMarkets[market.Id] = &MarketFiler{
-			Id:      market.Id,
-			Markets: map[string]bool{},
-			Exclude: market.Exclude,
+		mapFilterMarkets[market.Id] = &wings.MarketFiler{
+			Id:          market.Id,
+			Markets:     map[string]bool{},
+			IncludeOnly: market.IncludeOnly,
 		}
 	}
 
-	filterMarketMarkets := []RawFilterMarketMarkets{}
+	filterMarketMarkets := []wings.RawFilterMarketMarkets{}
 	service.DB.Query(&filterMarketMarkets, `select * from filter_market_markets;`)
 	for _, m := range filterMarketMarkets {
 		mapFilterMarkets[m.FilterMarketId].Markets[m.MarketsSlug] = true
 	}
 
-	rules := []RawRule{}
+	rules := []wings.RawRule{}
 	service.DB.Query(&rules, `select * from rules;`)
 
-	mapRule := map[int]*Rule{}
+	mapRule := map[int]*wings.Rule{}
 	for _, rawRule := range rules {
-		var o Operation
+		var o wings.Operation
 		switch mapOperations[rawRule.Operation] {
 		case 0:
-			o = Above
+			o = wings.Above
 		case 1:
-			o = Greater
+			o = wings.Greater
 		case 3:
-			o = Corridor
+			o = wings.Corridor
 		}
-		rule := &Rule{
+		rule := &wings.Rule{
 			Raw:       rawRule,
 			Si:        mapCoeff[rawRule.Coefficient],
 			Period:    mapPeriod[rawRule.Period],
 			Operation: o,
 		}
 		mapRule[rawRule.Id] = rule
-	}
-
-	Alerts = map[int]*Alert{}
-	alerts := []RawAlert{}
-	service.DB.Query(&alerts, `select * from alerts where status = 'published'`)
-	for _, alert := range alerts {
-		Alerts[alert.Id] = &Alert{
-			Raw:           alert,
-			Rules:         []*Rule{},
-			Filters:       []*FlowFilter{},
-			FilterMarkets: []*MarketFiler{},
+		op := mapOperationsInstances[rawRule.Operation]
+		vars.FrontDict.Rules[rawRule.Id] = &wings.FrontRule{
+			Label:     rule.Raw.Label,
+			Code:      op.Code,
+			Operation: op.Label,
 		}
 	}
 
-	alertRules := []RawAlertRules{}
+	//vars.Alerts = map[int]*wings.Alert{}
+	alerts := []wings.RawAlert{}
+	service.DB.Query(&alerts, `select * from alerts`)
+	for _, alert := range alerts {
+		vars.Alerts.Store(alert.Id, wings.Alert{
+			Raw:           alert,
+			IsActive:      alert.Status == "published",
+			Rules:         []*wings.Rule{},
+			Filters:       []*wings.FlowFilter{},
+			FilterMarkets: []*wings.MarketFiler{},
+		})
+		vars.FrontDict.Alert[alert.Id] = &wings.FrontAlert{
+			Label:    alert.Label,
+			IsActive: alert.Status == "published",
+			Rules:    []int{},
+		}
+	}
+
+	alertRules := []wings.RawAlertRules{}
 	service.DB.Query(&alertRules, `select * from alerts_rules`)
 
 	for _, ar := range alertRules {
-		alert := Alerts[ar.AlertsId]
-		if alert == nil {
+		alert, found := vars.Alerts.Load(ar.AlertsId)
+		if !found {
 			continue
 		}
 		rule := mapRule[ar.RulesId]
 		alert.Rules = append(alert.Rules, rule)
+		vars.FrontDict.Alert[ar.AlertsId].Rules = append(vars.FrontDict.Alert[ar.AlertsId].Rules, rule.Raw.Id)
+		vars.Alerts.Store(alert.Raw.Id, alert)
 	}
 
-	alertsFilters := []RawAlertFilters{}
+	alertsFilters := []wings.RawAlertFilters{}
 	service.DB.Query(&alertsFilters, `select * from alerts_filters;`)
 	for _, af := range alertsFilters {
-		alert := Alerts[af.AlertsId]
-		if alert == nil {
+		alert, found := vars.Alerts.Load(af.AlertsId)
+		if !found {
 			continue
 		}
 		alert.Filters = append(alert.Filters, mapFilters[af.FiltersId])
+		vars.Alerts.Store(alert.Raw.Id, alert)
 	}
 
-	alertsFilterMarkets := []RawAlertFilterMarket{}
+	alertsFilterMarkets := []wings.RawAlertFilterMarket{}
 	service.DB.Query(&alertsFilterMarkets, `select * from alerts_filter_market;`)
 	for _, af := range alertsFilterMarkets {
-		alert := Alerts[af.AlertsId]
-		if alert == nil {
+		alert, found := vars.Alerts.Load(af.AlertsId)
+		if !found {
 			continue
 		}
 		m := mapFilterMarkets[af.FilterMarketId]
-		fmt.Println(m)
 		alert.FilterMarkets = append(alert.FilterMarkets, m)
+		vars.Alerts.Store(alert.Raw.Id, alert)
 	}
 	fmt.Println("SyncPresets done")
 }

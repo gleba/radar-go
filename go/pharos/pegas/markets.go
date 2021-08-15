@@ -7,15 +7,15 @@ import (
 	"radar.cash/core/data/service"
 	"radar.cash/core/hand"
 	"radar.cash/core/sol"
-	"radar.cash/pharos/models"
+	"radar.cash/pharos/pegas/wings"
 )
 
-var IndexMarket map[uint32]map[string]bool
+var indexMarket map[uint32]map[string]bool
 
 func SyncMarkets() {
 	fmt.Println("SyncMarkets start")
 	rr := rocks.Markets.LoadAll()
-	IndexMarket = map[uint32]map[string]bool{}
+	indexMarket = map[uint32]map[string]bool{}
 	marketKeys := map[string]string{}
 	marketPSK := map[string]bool{}
 	for _, r := range rr {
@@ -26,10 +26,10 @@ func SyncMarkets() {
 			ex[market.Slug] = true
 			marketKeys[market.Slug] = market.Name
 		}
-		IndexMarket[r.Id] = ex
+		indexMarket[r.Id] = ex
 	}
 
-	markets := []*models.Market{}
+	markets := []*wings.Market{}
 	err := service.DB.Model(&markets).Select(&markets)
 	if err != nil {
 		fmt.Println("+")
@@ -39,10 +39,9 @@ func SyncMarkets() {
 		marketPSK[market.Slug] = true
 	}
 	for key, name := range marketKeys {
-		fmt.Println(key, name)
 		_, found := marketPSK[key]
 		if !found {
-			mmm := &models.Market{
+			mmm := &wings.Market{
 				Slug: key,
 				Name: name,
 			}

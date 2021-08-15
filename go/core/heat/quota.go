@@ -19,4 +19,10 @@ func RestoreQuota() {
 		hand.Safe(json.Unmarshal(raw.Data, &q))
 		Quotas.Store(q.ID, q)
 	}
+
+	//eSpace.Quotes.Sub(func(qq []*sol.CoinQuote) {
+	//	for _, q := range qq {
+	//		Quotas.Store(q.ID, *q)
+	//	}
+	//})
 }

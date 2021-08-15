@@ -1,0 +1,7 @@
+#!/bin/bash
+go install github.com/a8m/syncmap@master
+cd ./vars/asg
+#rm -rf $(ls -I "0.go")
+rm *
+syncmap -pkg asg -name ActiveAlerts "map[uint32]wings.ActiveAlert"
+syncmap -pkg asg -name SyncAlerts "map[int]wings.Alert"

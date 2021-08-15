@@ -1,14 +1,23 @@
 version: '3.5'
+
+x-common-variables: &env
+  CLICKHOUSE: clickhouse
+  NATS: nats
+  POSTGRES: database:5432
+
 services:
   miner:
-    build: ./miner
     restart: always
-    external_links:
-      - clickhouse
-      - nats
-    environment:
-      NATS: nats
-      CLICKHOUSE: clickhouse
+    build: radar_miner/.
+    environment: *env
+  pharos:
+    restart: always
+    build: pharos/.
+    environment: *env
+    expose:
+      - 8080
+      - 8180
+
 networks:
   default:
     external:

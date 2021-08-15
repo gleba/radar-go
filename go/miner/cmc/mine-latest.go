@@ -2,12 +2,12 @@ package cmc
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"radar.cash/core/heat"
 	"radar.cash/core/sol"
 
 	"radar.cash/core/hand"
-	"time"
 )
 
 var client = &http.Client{}
@@ -34,6 +34,7 @@ func MineLatest() {
 			Time: coin.LastUpdated,
 		}
 		pulseWriter.Add(&pulse, &coin)
+		heat.Quotas.Store(coin.ID, coin)
 	}
 
 	for _, coin := range latestQuery.Data {
@@ -44,11 +45,22 @@ func MineLatest() {
 		}
 		prev, havePrevSyncTime := heat.Quotas.Load(coin.ID)
 		if havePrevSyncTime {
-			prevSince := time.Since(prev.LastUpdated)
-			lastSince := time.Since(coin.LastUpdated)
-			diff := prevSince.Seconds() - lastSince.Seconds()
-			if diff > 0 {
+			//prevSince := time.Since(prev.LastUpdated)
+			//lastSince := time.Since(coin.LastUpdated)
+			//coin.LastUpdated.Sub(prev.LastUpdated)
+			diff := coin.LastUpdated.Sub(prev.LastUpdated)
+
+			if diff.Seconds() > 0 {
 				updatePulse(coin)
+				if coin.ID == 4233 {
+					fmt.Println(diff.Seconds(), coin.LastUpdated)
+					fmt.Println(coin.LastUpdated)
+					fmt.Println(prev.LastUpdated)
+				}
+			} else {
+				//fmt.Println("no changes")
+				//fmt.Println(coin.LastUpdated)
+				//fmt.Println(prev.LastUpdated)
 			}
 		} else {
 			updatePulse(coin)

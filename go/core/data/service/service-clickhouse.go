@@ -20,7 +20,7 @@ func OpenClickHose() {
 		if exception, ok := err.(*clickhouse.Exception); ok {
 			fmt.Printf("[%d] %s \n%s\n", exception.Code, exception.Message, exception.StackTrace)
 		} else {
-			log.Println("ClickHouse: sql ")
+			log.Println("ClickHouse: sql ", ok)
 		}
 		return
 	}

@@ -12,7 +12,7 @@ var Pulses box.Pulses
 
 func RestorePulse() []*sol.CoinPulse {
 	fmt.Println("RestorePulse")
-	pulse := sol.CoinPulse{}
+
 	var pulses []*sol.CoinPulse
 	rows, err := service.SqlX.Queryx(`SELECT *
 FROM CmcPulse
@@ -25,14 +25,20 @@ WHERE Time IN (SELECT Time
 		log.Println(err)
 	}
 	for rows.Next() {
-		err := rows.StructScan(&pulse)
+		pulse := &sol.CoinPulse{}
+		err := rows.StructScan(pulse)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		pulses = append(pulses, &pulse)
-		Pulses.Store(pulse.ID, pulse)
+		pulses = append(pulses, pulse)
+		Pulses.Store(pulse.ID, *pulse)
 	}
 
 	fmt.Println("RestorePulse done")
+	//eSpace.Pulses.Sub(func(pulses []*sol.CoinPulse) {
+	//	for _, pulse := range pulses {
+	//		Pulses.Store(pulse.ID, *pulse)
+	//	}
+	//})
 	return pulses
 }

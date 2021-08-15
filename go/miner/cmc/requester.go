@@ -8,13 +8,26 @@ import (
 	"log"
 	"net/http"
 	"radar.cash/core/hand"
+	"sync"
 	"time"
 )
 
-var rqCounter []int64
+var syncCounter sync.Map
+var syncKey = ")))"
+
+func init() {
+	var rqCounter []int64
+	syncCounter.Store(syncKey, rqCounter)
+}
+func getQ() []int64 {
+	r, _ := syncCounter.Load(syncKey)
+	return r.([]int64)
+}
 
 func opSec() int {
 	now := time.Now().Unix()
+	syncCounter.Load(syncKey)
+	rqCounter := getQ()
 	var op = 0
 	for n, t := range rqCounter {
 		if now-t < 60 {
@@ -23,12 +36,12 @@ func opSec() int {
 			rqCounter = append(rqCounter[:n], rqCounter[n+1:]...)
 		}
 	}
-	//fmt.Println(op)
+	syncCounter.Store(syncKey, rqCounter)
 	return op
 }
 func request(url string) []byte {
 	req, err := http.NewRequest("GET", url, nil)
-	rqCounter = append(rqCounter, time.Now().Unix())
+	rqCounter := getQ()
 	hand.Safe(err)
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.66 Safari/537.36 Edg/80.0.361.40")
 	req.Header.Set("Accept-Encoding", "gzip")
